@@ -1,0 +1,17 @@
+# Obsidian workspace config (personal, don't share)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/community-plugins.json
+.obsidian/core-plugins.json
+.obsidian/hotkeys.json
+.obsidian/plugins/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code
+.claude/cache/
+
+# Claudian plugin sessions
+.claudian/
