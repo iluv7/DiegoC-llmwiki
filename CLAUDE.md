@@ -27,6 +27,7 @@ vault/
     sources/            #   source 摘要页（每个 raw 对应一个）
     entities/           #   实体页（框架、工具、组织、人物）
     concepts/           #   概念页（方法、模式、术语）
+    images/             #   图片页（图片语义理解、OCR、关联知识节点）
     synthesis/          #   综合分析页（跨源比较、阶段性结论）
     outputs/            #   问答归档页
   CLAUDE.md             # 层 3：Schema — 本文件，人类与 LLM 共同演进
@@ -205,6 +206,48 @@ tags: []
 ## 回答
 ```
 
+### image 页（`wiki/images/`）
+- **角色**：知识节点 — 图片语义理解、OCR 提取、架构/流程关系
+- **何时创建**：每次 ingest 时，扫描 raw 文章中引用的图片及 `raw/assets/` 下的独立图片，调用 Read（Vision）生成
+- **文件名**：kebab-case，如 `apt-attack-kill-chain.png.md`
+- **视觉理解仅发生在 ingest 阶段**，Query 阶段禁止调用视觉模型
+
+```yaml
+---
+title: "图片标题"
+type: image
+status: complete
+date_created: YYYY-MM-DD
+date_modified: YYYY-MM-DD
+caption: "一句高质量摘要，包含检索关键词"
+visual_description: "完整视觉语义描述（架构图需描述组件、连接关系、数据流、执行顺序；流程图描述步骤和分支）"
+extracted_text: "OCR 提取的全部可见文字"
+asset_path: "[[raw/assets/xxx.png]]"
+sources: []
+related: []
+tags: []
+---
+# 图片标题
+
+![[raw/assets/xxx.png]]
+
+## 视觉语义
+（完整的视觉理解描述）
+
+## OCR 文字
+（提取的可见文字，如适用）
+
+## 关联
+- [[concepts/xxx]] — 一句话说明
+- [[entities/xxx]] — 一句话说明
+```
+
+**约束**：
+- 禁止生成无意义描述（如"一张关于 XX 的图片"）
+- `caption` 必须包含检索关键词，确保 query 阶段能被搜索命中
+- `visual_description` 对架构图必须描述组件、连接关系、数据流、执行顺序；对流程图必须描述步骤和分支
+- 图片文件本身保留在 `raw/assets/` 中，Image 页仅存放语义理解结果
+
 ---
 
 ## 核心原则
@@ -249,7 +292,7 @@ LLM 只读 raw/，绝不修改原始资料：
 ## index.md 与 log.md
 
 ### index.md（内容索引）
-- 按页面类型分节（sources / entities / concepts / synthesis / outputs）
+- 按页面类型分节（sources / entities / concepts / images / synthesis / outputs）
 - 每条 = `- [[path/to/page]] — tldr 一句话摘要`
 - LLM 每次 ingest/save 后更新
 - query 时 LLM 第一步读 index，靠 tldr 快速定位相关页面
@@ -269,7 +312,7 @@ LLM 只读 raw/，绝不修改原始资料：
 | 字段 | 说明 | 页面类型 |
 |------|------|----------|
 | `title` | 页面标题 | 全部 |
-| `type` | source / entity / concept / synthesis / output | 全部 |
+| `type` | source / entity / concept / image / synthesis / output | 全部 |
 | `status` | complete / stub | 全部 |
 | `date_created` | 创建日期 YYYY-MM-DD | 全部 |
 | `date_modified` | 最后修改日期 YYYY-MM-DD | 全部 |
@@ -278,6 +321,10 @@ LLM 只读 raw/，绝不修改原始资料：
 | `external_url` | 原始 URL | source |
 | `author` | 作者 | source |
 | `published` | 发布日期 | source |
+| `caption` | 一句高质量摘要，包含检索关键词 | image |
+| `visual_description` | 完整视觉语义描述 | image |
+| `extracted_text` | OCR 提取的全部可见文字 | image |
+| `asset_path` | 指向 raw/assets/ 图片文件的 wikilink | image |
 | `sources` | 引用来源的 wikilink 列表 | 全部 |
 | `related` | 相关页面的 wikilink 列表 | 全部 |
 | `supports` | 支持的页面 | entity/concept/synthesis |
