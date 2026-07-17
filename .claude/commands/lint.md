@@ -43,9 +43,14 @@ description: "wiki 健康检查：查找孤儿页、悬空链接、缺失字段�
 - [ ] **concept/entity 图解遗漏**：concept/entity 页是否缺少对相关 Image 页的引用和嵌入
 
 ### 5. 队列状态
-- [ ] **待处理 raw**：raw/ 中尚未被 ingest 的文件
+- [ ] **待处理 raw**：raw/ 中尚未被 ingest 的文件（articles/、videos/ 均需检查）
 - [ ] **待处理图片**：raw/assets/ 中尚未生成 Image 页的图片
-- [ ] **log.md 完整性**：ingest 记录与 wiki 页面是否一致（含 image ingest 记录）
+- [ ] **log.md 完整性**：ingest 记录与 wiki 页面是否一致（含 image ingest 记录和 video ingest 记录）
+- [ ] **视频 source 页质量**：
+  - `external_url` 是否填写了视频原始链接（而非文字稿路径）
+  - `raw_note` 是否正确指向 `[[raw/videos/...]]`
+  - 是否有说话人标注但 source 摘要中未体现
+  - 视频文字稿是否仍有大量未清理的时间戳（提醒用户清理）
 
 ## 输出
 
@@ -57,6 +62,6 @@ description: "wiki 健康检查：查找孤儿页、悬空链接、缺失字段�
 
 ## 注意事项
 
-- **不要修改 raw/**：包括 raw/assets/ 中的图片，lint 只检查不修改
+- **不要修改 raw/**：包括 raw/articles/、raw/videos/、raw/assets/ 中的所有文件，lint 只检查不修改
 - Image 页的 `asset_path` 如指向不存在的文件，标记为高优先级问题
 - 如果某张图片的语义理解质量差（如描述模糊），建议用 `ingest --force` 重新处理该图片
