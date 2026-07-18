@@ -61,9 +61,12 @@ cd my-vault
 
 Open folder as vault → 选择 `my-vault/`
 
-### 3. 丢入第一篇文章
+### 3. 丢入第一批资料
 
-把你想整理的文章放进 `raw/articles/`（支持 .md 文件）
+把想整理的内容放进 `raw/`：
+- **文章**：`.md` 文件放进 `raw/articles/`
+- **图片**：截图、架构图等放进 `raw/assets/` — LLM 会在 ingest 时完成视觉理解
+- **视频**：B 站字幕、播客文字稿等放进 `raw/videos/`（详见下方[音视频抓取](#音视频抓取)）
 
 ### 4. 启动 Claude Code
 
@@ -76,13 +79,33 @@ claude
 
 在 Claude Code 对话中输入 `/ingest`，LLM 会：
 
-- 阅读 `raw/articles/` 中的文章
+- 阅读 `raw/articles/` 和 `raw/videos/` 中的资料
+- 分析 `raw/assets/` 中的图片（视觉理解，仅此一次）
 - 在 `wiki/sources/` 创建 source 摘要页
+- 在 `wiki/images/` 创建 Image 页（视觉描述 + OCR）
 - 提取实体和概念，创建/更新 entity、concept 页
 - 建立页面间的交叉引用
 - 更新 `index.md` 和 `log.md`
 
-### 6. 后续
+### 6. 音视频抓取
+
+不是所有知识都在文章里。用这两个工具抓取音视频内容：
+
+**有字幕（B 站等）→ [Bilibili Obsidian Clipper](https://chromewebstore.google.com/detail/bilibili-obsidian-clipper/jokophbofiphenlplmohabdcmalcbenl?hl=zh-CN)**
+
+Chrome 扩展，直接从 B 站视频提取字幕轨，无需语音识别，又快又准。
+- 打开视频 → 点击扩展 → 预览字幕 → 复制 Markdown 或一键保存至 Obsidian
+- 配合 Obsidian **Local REST API** 插件可实现一键保存到 `raw/videos/`
+
+**无字幕（播客、访谈、教程）→ [videotranscriber.ai](https://videotranscriber.ai)**
+
+在线语音转文字工具。支持 YouTube 链接、TikTok 链接、本地上传（MP4、MP3 等）。
+- 贴链接或上传文件 → 等待转写 → 复制文字稿
+- 每天免费 10 次
+
+**抓取后**：清理冗余时间戳、保留说话人标注，存入 `raw/videos/`，然后 `/ingest`。
+
+### 7. 后续
 
 - `/query <问题>` — 基于 wiki 回答
 - `/lint` — 定期给 wiki 做健康检查
