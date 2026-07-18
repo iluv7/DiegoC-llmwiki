@@ -43,6 +43,51 @@ vault/
 
 ---
 
+## 音视频素材抓取
+
+`raw/videos/` 存放视频和音频的文字稿（字幕、转写文本），来源包括 B 站技术分享、播客、教程录屏、会议录像等。视频/音频本身不可被 LLM 直接消费，需要先转换为文本再入库。
+
+### 抓取工具
+
+**场景一：有字幕轨的视频 → Bilibili Obsidian Clipper**
+
+适用于 B 站等平台已有字幕轨的视频（UP 主上传字幕或平台 AI 自动生成）。直接从播放器提取字幕文本，又快又准，无需语音识别。
+
+- **判断方法**：播放器是否有"字幕"选项 — 有就能抓，没有就抓不了
+- **工具**：[Bilibili Obsidian Clipper](https://chromewebstore.google.com/detail/bilibili-obsidian-clipper/jokophbofiphenlplmohabdcmalcbenl?hl=zh-CN)（Chrome 扩展）
+- **使用流程**：打开目标视频 → 点击扩展图标 → 自动识别字幕轨 → 预览确认 → 复制 Markdown 或一键保存至 Obsidian
+- **Obsidian 集成**：配合 Obsidian 的 **Local REST API** 社区插件，可实现一键保存到本地 vault 的 `raw/videos/` 目录
+
+**场景二：无字幕的音视频 → videotranscriber.ai**
+
+适用于播客、访谈、YouTube 教程、TikTok 视频、会议录像等没有现成字幕的任意音视频。通过语音转文字（ASR）生成文字稿。
+
+- **工具**：[videotranscriber.ai](https://videotranscriber.ai)（在线工具）
+- **支持输入**：YouTube 链接、TikTok 链接、本地上传（MP4、MP3 等常见格式）
+- **配额**：每天免费 10 次
+- **使用流程**：贴链接或上传文件 → 等待转写完成（几分钟到十几分钟）→ 复制文字稿
+- **导出格式**：支持多种文本格式导出，也可直接复制页面上的转写结果
+
+### 文字稿预处理
+
+无论使用哪种工具抓取，存入 `raw/videos/` 前需做基本整理：
+
+- **删除冗余时间戳**：保留章节标记，去掉逐行时间戳（如 `00:01:23 --> 00:01:45`）
+- **保留说话人标注**：如有 speaker diarization（说话人分离），保留标签（如 `Speaker A:`、`主持人：`）
+- **标注元信息**：在文件头部标注视频标题、URL、作者/UP 主、发布日期
+- **格式**：统一为 Markdown（.md），文件名 kebab-case
+
+### 入库流程
+
+1. 将整理好的文字稿存入 `raw/videos/{topic-slug}.md`
+2. 运行 `/ingest`：走标准 ingest 流程，与文章处理别无二致：
+   - 创建 `wiki/sources/` 下的 source 页（`raw_note` 指向 `[[raw/videos/filename]]`，`external_url` 填写视频链接）
+   - 提取实体和概念，创建/更新对应 wiki 页面
+   - 更新交叉引用、index.md、log.md
+3. 到这一步，`raw/` 目录下的三个子目录就都跑通了：**articles/**（文章）、**assets/**（图片）、**videos/**（音视频台词）。文本、图片、音视频三类素材的入库流程完整闭环
+
+---
+
 ## 页面类型
 
 ### source 页（`wiki/sources/`）

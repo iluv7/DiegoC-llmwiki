@@ -20,7 +20,7 @@ description: "基于 wiki 内容回答问题，附带引用"
    - **Image 页**（图片语义描述、OCR 文字）
    - source 页（原始资料摘要）
 3. **检查是否需要回溯 raw**：
-   - 如果 wiki 信息不足以回答，查看相关 source 页面的 `raw_note`，回溯阅读原始资料
+   - 如果 wiki 信息不足以回答，查看相关 source 页面的 `raw_note`，回溯阅读原始资料（`raw/articles/` 或 `raw/videos/`）
    - 如果 wiki 中存在矛盾标注，需要展示双方观点
    - **不要回溯 raw 图片**：如需更多图片信息，应从 Image 页获取，而非重新分析原图
 4. **判断是否需要嵌入图片**：
