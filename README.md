@@ -61,9 +61,12 @@ cd my-vault
 
 Open folder as vault → select `my-vault/`
 
-### 3. Drop in Your First Article
+### 3. Drop in Your First Source
 
-Place articles into `raw/articles/` (`.md` files supported)
+Place content into `raw/`:
+- **Articles**: `.md` files into `raw/articles/`
+- **Images**: screenshots, diagrams into `raw/assets/` — the LLM will analyze them during ingest
+- **Videos**: transcripts from Bilibili, podcasts, tutorials into `raw/videos/` (see [Video/Audio Capture](#videoaudio-capture) below)
 
 ### 4. Launch Claude Code
 
@@ -76,13 +79,33 @@ claude
 
 Type `/ingest` in Claude Code. The LLM will:
 
-- Read articles in `raw/articles/`
+- Read sources in `raw/articles/` and `raw/videos/`
+- Analyze images in `raw/assets/` (vision — one time only)
 - Create source summary pages in `wiki/sources/`
 - Extract entities and concepts, create/update entity & concept pages
+- Build image pages in `wiki/images/` with visual descriptions and OCR
 - Build cross-references between pages
 - Update `index.md` and `log.md`
 
-### 6. Ongoing
+### 6. Video/Audio Capture
+
+Not all knowledge lives in articles. Use these tools to capture video/audio content:
+
+**With subtitles (Bilibili, etc.) → [Bilibili Obsidian Clipper](https://chromewebstore.google.com/detail/bilibili-obsidian-clipper/jokophbofiphenlplmohabdcmalcbenl?hl=zh-CN)**
+
+A Chrome extension that extracts subtitle tracks directly from Bilibili videos. No speech recognition needed — fast and accurate.
+- Open the video → click extension → preview subtitles → copy Markdown or save to Obsidian
+- Requires Obsidian's **Local REST API** plugin for one-click saving to `raw/videos/`
+
+**Without subtitles (podcasts, interviews, tutorials) → [videotranscriber.ai](https://videotranscriber.ai)**
+
+Online speech-to-text tool. Supports YouTube links, TikTok links, and local uploads (MP4, MP3, etc.).
+- Paste link or upload file → wait for transcription → copy transcript
+- Free tier: 10 transcriptions per day
+
+**After capture**: clean up timestamps, keep speaker labels, save to `raw/videos/`, then run `/ingest`.
+
+### 7. Ongoing
 
 - `/query <question>` — answer based on the wiki
 - `/lint` — periodic wiki health check
