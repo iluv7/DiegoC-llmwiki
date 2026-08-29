@@ -7,6 +7,9 @@
 **Traditional RAG**: each query assembles answers from raw document chunks — no accumulation across 100 queries on the same topic.  
 **LLM Wiki**: the LLM digests, structures, and cross-references during ingest — the wiki grows denser and smarter with every addition.
 
+> [!IMPORTANT]
+> **LLM Wiki is not a replacement for RAG.** It adds a structured knowledge layer that can improve retrieval and context assembly. Wiki links are only one signal for discovering related information and should be combined with full-text search, semantic search, metadata, and the original sources.
+
 > "Obsidian is the IDE; the LLM is the programmer; the wiki is the codebase." — Andrej Karpathy
 >
 > "You and the LLM co-evolve this over time." — Karpathy
